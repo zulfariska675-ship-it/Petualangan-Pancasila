@@ -1,0 +1,51 @@
+{
+  "entities": {
+    "StudentRecord": {
+      "title": "StudentRecord",
+      "description": "Rekapitulasi capaian, skor kuis, dan data pemain siswa Petualangan Pancasila",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "nama": { "type": "string" },
+        "kelas": { "type": "string" },
+        "sekolah": { "type": "string" },
+        "nilaiEvaluasi": { "type": "number" },
+        "bintang": { "type": "number" },
+        "levelTuntas": { "type": "number" },
+        "lencanaCount": { "type": "number" },
+        "statusDuta": { "type": "boolean" },
+        "tanggal": { "type": "string" },
+        "waktuUpdate": { "type": "string" },
+        "gameTerakhir": { "type": "string" },
+        "poinTotal": { "type": "number" },
+        "aktivitasCount": { "type": "number" },
+        "catatan": { "type": "string" }
+      },
+      "required": ["id", "nama", "nilaiEvaluasi", "bintang"]
+    },
+    "TeacherSetting": {
+      "title": "TeacherSetting",
+      "description": "Pengaturan profil pendidik dan konfigurasi portal guru",
+      "type": "object",
+      "properties": {
+        "namaGuru": { "type": "string" },
+        "sekolah": { "type": "string" },
+        "kelasDefault": { "type": "string" },
+        "whatsappNumber": { "type": "string" },
+        "emailGuru": { "type": "string" },
+        "accessCode": { "type": "string" }
+      },
+      "required": ["namaGuru", "sekolah"]
+    }
+  },
+  "firestore": {
+    "/student_records/{recordId}": {
+      "schema": "StudentRecord",
+      "description": "Koleksi data hasil belajar dan nilai siswa tersimpan secara real-time"
+    },
+    "/teacher_settings/{settingId}": {
+      "schema": "TeacherSetting",
+      "description": "Pengaturan identitas sekolah dan guru pengampu"
+    }
+  }
+}

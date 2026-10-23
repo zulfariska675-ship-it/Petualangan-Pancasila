@@ -1,0 +1,49 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isValidId(docId) {
+      return docId is string && docId.size() > 0 && docId.size() <= 128 && docId.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidStudentRecord(data) {
+      return data.id is string
+        && data.id.size() > 0 && data.id.size() <= 128
+        && data.nama is string && data.nama.size() > 0 && data.nama.size() <= 100
+        && (!('kelas' in data) || (data.kelas is string && data.kelas.size() <= 100))
+        && (!('sekolah' in data) || (data.sekolah is string && data.sekolah.size() <= 150))
+        && data.nilaiEvaluasi is number && data.nilaiEvaluasi >= 0 && data.nilaiEvaluasi <= 100
+        && data.bintang is number && data.bintang >= 0
+        && (!('levelTuntas' in data) || (data.levelTuntas is number))
+        && (!('lencanaCount' in data) || (data.lencanaCount is number))
+        && (!('statusDuta' in data) || (data.statusDuta is bool))
+        && (!('tanggal' in data) || (data.tanggal is string && data.tanggal.size() <= 50))
+        && (!('waktuUpdate' in data) || (data.waktuUpdate is string && data.waktuUpdate.size() <= 80))
+        && (!('gameTerakhir' in data) || (data.gameTerakhir is string && data.gameTerakhir.size() <= 200))
+        && (!('poinTotal' in data) || (data.poinTotal is number))
+        && (!('aktivitasCount' in data) || (data.aktivitasCount is number))
+        && (!('catatan' in data) || (data.catatan is string && data.catatan.size() <= 500));
+    }
+
+    function isValidTeacherSetting(data) {
+      return data.namaGuru is string && data.namaGuru.size() > 0 && data.namaGuru.size() <= 100
+        && data.sekolah is string && data.sekolah.size() > 0 && data.sekolah.size() <= 150
+        && (!('kelasDefault' in data) || (data.kelasDefault is string && data.kelasDefault.size() <= 100))
+        && (!('whatsappNumber' in data) || (data.whatsappNumber is string && data.whatsappNumber.size() <= 30))
+        && (!('emailGuru' in data) || (data.emailGuru is string && data.emailGuru.size() <= 100))
+        && (!('accessCode' in data) || (data.accessCode is string && data.accessCode.size() <= 50));
+    }
+
+    match /student_records/{recordId} {
+      allow read: if true;
+      allow create, update: if isValidId(recordId) && isValidStudentRecord(request.resource.data);
+      allow delete: if isValidId(recordId);
+    }
+
+    match /teacher_settings/{settingId} {
+      allow read: if true;
+      allow create, update: if isValidId(settingId) && isValidTeacherSetting(request.resource.data);
+      allow delete: if isValidId(settingId);
+    }
+  }
+}
